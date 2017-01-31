@@ -3,7 +3,8 @@ const async = require('async'),
       request = require('request');
 
 //const USERS_ENDPOINT = "http://user.rhom.io/users";
-const USERS_ENDPOINT = "http://rhom-user-service.13.90.82.83.nip.io/users";
+//const USERS_ENDPOINT = "http://rhom-user-service.13.90.82.83.nip.io/users";
+const USERS_ENDPOINT = "http://linux-user-service.azurewebsites.net/users";
 
 let accessToken = jwt.sign({
     iss: '10152875766888406'
@@ -17,6 +18,7 @@ const MAX_PARALLEL_REQUESTS = 50;
 function measureLatency(parallelism, callback) {
     let totalRequests = 0;
     let totalLatency = 0;
+    let parallelismStart = Date.now();
 
     let threads = [];
     for (let idx = 0; idx < parallelism; idx++) {
@@ -48,7 +50,10 @@ function measureLatency(parallelism, callback) {
         );
     }, err => {
         let averageLatency = totalLatency / totalRequests;
-        console.log(`${averageLatency}`);
+        let wallclockTime = (Date.now() - parallelismStart) / 1000.0;
+        let requestsPerSecond = totalRequests / wallclockTime;
+
+        console.log(`${parallelism}: ${averageLatency} @ ${requestsPerSecond}`);
         return callback();
     });
 }
