@@ -2,7 +2,8 @@ const async = require('async'),
       jwt = require('jsonwebtoken'),
       request = require('request');
 
-const USERS_ENDPOINT = "http://user.rhom.io/users";
+//const USERS_ENDPOINT = "http://user.rhom.io/users";
+const USERS_ENDPOINT = "http://rhom-user-service.13.90.82.83.nip.io/users";
 
 let accessToken = jwt.sign({
     iss: '10152875766888406'
@@ -10,7 +11,7 @@ let accessToken = jwt.sign({
     expiresIn: process.env.ACCESS_TOKEN_LIFETIME
 });
 
-const SETTLE_ITERATIONS = 30;
+const SETTLE_ITERATIONS = 40;
 const MAX_PARALLEL_REQUESTS = 50;
 
 function measureLatency(parallelism, callback) {
@@ -47,7 +48,7 @@ function measureLatency(parallelism, callback) {
         );
     }, err => {
         let averageLatency = totalLatency / totalRequests;
-        console.log(`${parallelism}: ${averageLatency}`);
+        console.log(`${averageLatency}`);
         return callback();
     });
 }
