@@ -16,6 +16,7 @@ const MAX_PARALLEL_REQUESTS = 50;
 function measureLatency(parallelism, callback) {
     let totalRequests = 0;
     let totalLatency = 0;
+    let parallelismStart = Date.now();
 
     let threads = [];
     for (let idx = 0; idx < parallelism; idx++) {
@@ -47,7 +48,10 @@ function measureLatency(parallelism, callback) {
         );
     }, err => {
         let averageLatency = totalLatency / totalRequests;
-        console.log(`${parallelism}: ${averageLatency}`);
+        let wallclockTime = (Date.now() - parallelismStart) / 1000.0;
+        let requestsPerSecond = totalRequests / wallclockTime;
+
+        console.log(`${parallelism}: ${averageLatency} @ ${requestsPerSecond}`);
         return callback();
     });
 }
